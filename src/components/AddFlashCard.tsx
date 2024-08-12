@@ -1,14 +1,36 @@
 import { useState } from "react";
 
-const AddFlashCard = ({ setIsModalOpen }: {
-    setIsModalOpen: (isOpen: boolean) => void
+const AddFlashCard = ({ setIsModalOpen,data, setData }: {
+    setIsModalOpen: (isOpen: boolean) => void;
+    data: Array<{
+        id: number,
+        question: string,
+        answer: string
+    }>;
+    setData: any;
 }) => {
     const [question, setQuestion] = useState('');
     const [answer, setAnswer] = useState('');
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log("Hello world");
+        if(answer == "" || question == ""){
+            alert("Please fill both question and answer fields.");
+            return;
+        }
+
+        const newFlashcard = {
+            id: data.length + 1,
+            question,
+            answer,
+        };
+    
+        setData((prev: any) => {
+            const updatedData = [...prev, newFlashcard];
+            localStorage.setItem('flashcards', JSON.stringify(updatedData));
+            return updatedData;
+        });
+    
         setIsModalOpen(false);
     }
 

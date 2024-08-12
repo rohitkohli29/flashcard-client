@@ -1,36 +1,29 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import FlashCard from './components/FlashCard'
 import { ArrowLeft, ArrowRight, Edit } from 'lucide-react';
 import AddFlashCard from './components/AddFlashCard';
 
-const data = [
-  {
-    id: 1,
-    question: 'Who i am?',
-    answer: 'I am Rohit'
-  },
-  {
-    id: 2,
-    question: 'What is my favorite color?',
-    answer: 'blue'
-  },
-  {
-    id: 3,
-    question: 'What is my favorite car?',
-    answer: 'Bmw'
-  }
-]
-
 function App() {
   const [flipped, setFlipped] = useState(false);
   const [cardNumber, setCardNumber] = useState(0);
-  const [isModalOpen,setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const d = localStorage.getItem("flashcards");
+    if (d == null) {
+      localStorage.setItem("flashcards", JSON.stringify([]));
+      setData([]);
+      return;
+    }
+    setData(JSON.parse(d));
+  }, [])
 
   return (
     <div className='w-full h-screen flex relative items-center justify-center'>
       <div className='w-full absolute top-5 flex items-center justify-center gap-x-2'>
-        <h1 className='text-5xl'>All Flashcards</h1>
+        <h1 className='sm:text-5xl text-2xl'>All Flashcards</h1>
         <div className='ml-4 mt-1'>
           <button onClick={() => setIsModalOpen(true)} className='p-2 text-sm text-white flex gap-x-1 rounded bg-blue-500'>Add Flashcard <Edit size={20} /></button>
         </div>
@@ -52,7 +45,7 @@ function App() {
 
       {isModalOpen && (
         <div onClick={() => setIsModalOpen(false)} className='fixed top-0 flex items-center justify-center left-0 w-full h-full backdrop-blur-md z-50'>
-          <AddFlashCard setIsModalOpen={setIsModalOpen}/>
+          <AddFlashCard data={data} setData={setData} setIsModalOpen={setIsModalOpen} />
         </div>
       )}
     </div>
